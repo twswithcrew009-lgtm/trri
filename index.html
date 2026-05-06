@@ -123,14 +123,6 @@
             font-weight: 600;
         }
 
-        .hint-text {
-            color: #999;
-            font-size: 0.85em;
-            margin-top: 15px;
-            padding-top: 15px;
-            border-top: 1px solid #eee;
-        }
-
         /* Main Content Styles */
         .container {
             text-align: center;
@@ -353,13 +345,6 @@
                 <button type="submit" class="login-btn">Login</button>
                 <div class="error-message" id="errorMessage">❌ Invalid username or password</div>
                 <div class="success-message" id="successMessage">✅ Login successful!</div>
-                <div class="hint-text">
-                    📝 Valid users from database:<br>
-                    <strong>admin / admin123</strong><br>
-                    <strong>KcoN26 / LEtSKc0N!</strong><br>
-                    <strong>user2 / pass456</strong><br>
-                    <strong>test / test123</strong>
-                </div>
             </form>
         </div>
     </div>
@@ -479,7 +464,7 @@
                 // Invalid credentials
                 console.log('❌ Login REJECTED - no matching user');
                 console.log('Available users:', validUsers.map(u => u.username).join(', '));
-                showError('Invalid username or password. Check the hint below.');
+                showError('Invalid username or password');
             }
         });
 
