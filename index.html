@@ -84,6 +84,27 @@
             box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
         }
 
+        .remember-me {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 20px;
+            cursor: pointer;
+        }
+
+        .remember-me input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            accent-color: #667eea;
+            cursor: pointer;
+        }
+
+        .remember-me span {
+            font-size: 0.9em;
+            color: #555;
+            font-weight: 500;
+        }
+
         .login-btn {
             width: 100%;
             padding: 12px;
@@ -367,6 +388,10 @@
                     <label for="password">Password</label>
                     <input type="password" id="password" name="password" placeholder="Enter your password" required>
                 </div>
+                <label class="remember-me">
+                    <input type="checkbox" id="rememberMe">
+                    <span>Remember me for 30 days</span>
+                </label>
                 <button type="submit" class="login-btn">Login</button>
                 <div class="error-message" id="errorMessage">❌ Invalid username or password</div>
                 <div class="success-message" id="successMessage">✅ Login successful!</div>
@@ -567,11 +592,12 @@
             }
 
             try {
+                const rememberMe = document.getElementById('rememberMe').checked;
                 const response = await fetch('/api/login', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     credentials: 'same-origin',
-                    body: JSON.stringify({ username, password })
+                    body: JSON.stringify({ username, password, rememberMe })
                 });
                 const data = await response.json();
 

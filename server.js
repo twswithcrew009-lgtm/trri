@@ -80,6 +80,11 @@ app.post('/api/login', (req, res) => {
 
   if (user) {
     req.session.user = { id: user.id, username: user.username, email: user.email };
+    if (req.body.rememberMe) {
+      req.session.cookie.maxAge = 30 * 24 * 60 * 60 * 1000; // 30 days
+    } else {
+      req.session.cookie.expires = false; // session cookie — expires when browser closes
+    }
     res.json({
       success: true,
       message: 'Login successful',
