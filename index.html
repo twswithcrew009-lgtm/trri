@@ -527,33 +527,7 @@
         document.addEventListener('mousemove', updateActivityTime);
         document.addEventListener('touchstart', updateActivityTime);
 
-        // ===== WINDOW/TAB CLOSE HANDLERS =====
-        
-        // Auto-logout when tab/window is closed
-        window.addEventListener('beforeunload', function() {
-            clearSession('Tab/Window closed - beforeunload event');
-        });
-
-        // Auto-logout when browser/tab is closed (not just page navigation)
-        window.addEventListener('unload', function() {
-            clearSession('Browser/Tab closed - unload event');
-        });
-
-        // Detect if user navigated to a different domain
-        window.addEventListener('pagehide', function(event) {
-            if (event.persisted === false) {
-                clearSession('User navigated away from page');
-            }
-        });
-
-        // Detect if user closes the window
-        window.addEventListener('beforeunload', function(e) {
-            const currentUser = localStorage.getItem('currentUser');
-            if (currentUser) {
-                console.log('🔴 WINDOW CLOSE DETECTED - Clearing session');
-                clearSession('Window close detected');
-            }
-        });
+        // Session is managed server-side — no logout on navigation
 
         // ===== PAGE LOAD & LOGIN HANDLERS =====
 
@@ -606,10 +580,16 @@
                     document.getElementById('successMessage').style.display = 'block';
                     localStorage.setItem('currentUser', username);
                     document.getElementById('loginForm').reset();
+                    const params = new URLSearchParams(window.location.search);
+                    const redirectTo = params.get('redirect');
                     setTimeout(() => {
-                        showMainContent(username);
-                        showSessionWarning();
-                        startSessionTimer();
+                        if (redirectTo) {
+                            window.location.href = redirectTo;
+                        } else {
+                            showMainContent(username);
+                            showSessionWarning();
+                            startSessionTimer();
+                        }
                     }, 500);
                 } else {
                     console.log('❌ Login REJECTED');

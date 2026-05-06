@@ -50,7 +50,8 @@ function requireAuth(req, res, next) {
   if (req.session && req.session.user) {
     return next();
   }
-  res.redirect('/index.html?authRequired=1');
+  const redirect = encodeURIComponent(req.originalUrl);
+  res.redirect(`/index.html?authRequired=1&redirect=${redirect}`);
 }
 
 // Health check endpoint
