@@ -192,62 +192,60 @@
             margin-bottom: 40px;
         }
 
-        .btn {
-            padding: 20px 30px;
-            font-size: 1.1em;
-            font-weight: 600;
-            border: none;
+        .btn-card {
+            position: relative;
+            overflow: hidden;
             border-radius: 12px;
-            cursor: pointer;
-            transition: all 0.3s ease;
             text-decoration: none;
-            display: inline-block;
+            transition: all 0.3s ease;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            display: flex;
+            flex-direction: column;
+            height: 300px;
         }
 
-        .btn:hover {
+        .btn-card:hover {
             transform: translateY(-5px);
             box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
         }
 
-        .btn:active {
+        .btn-card:active {
             transform: translateY(-2px);
+        }
+
+        .btn-card-image {
+            width: 100%;
+            height: 70%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .btn-card:hover .btn-card-image {
+            transform: scale(1.05);
+        }
+
+        .btn-card-text {
+            height: 30%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1em;
+            font-weight: 600;
+            color: white;
+            padding: 10px;
+            text-align: center;
         }
 
         .btn-primary {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background: linear-gradient(135deg, #5568d3 0%, #6a3d92 100%);
         }
 
         .btn-secondary {
             background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-            color: white;
-        }
-
-        .btn-secondary:hover {
-            background: linear-gradient(135deg, #d870e8 0%, #d93a54 100%);
         }
 
         .btn-tertiary {
             background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-            color: white;
-        }
-
-        .btn-tertiary:hover {
-            background: linear-gradient(135deg, #3a96e8 0%, #00d9e8 100%);
-        }
-
-        .btn-quaternary {
-            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
-            color: white;
-        }
-
-        .btn-quaternary:hover {
-            background: linear-gradient(135deg, #2bc968 0%, #1dd9c1 100%);
         }
 
         /* Main Room Button Styles */
@@ -268,6 +266,10 @@
             align-items: center;
             justify-content: center;
             border-radius: 16px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            font-weight: 600;
         }
 
         .btn-main-room:hover {
@@ -278,6 +280,21 @@
 
         .btn-main-room:active {
             transform: scale(1.05) translateY(-2px);
+        }
+
+        .session-warning {
+            background-color: #fff3cd;
+            border: 1px solid #ffc107;
+            color: #856404;
+            padding: 12px;
+            border-radius: 6px;
+            margin-top: 20px;
+            font-size: 0.9em;
+            display: none;
+        }
+
+        .session-warning.show {
+            display: block;
         }
 
         @media (max-width: 1024px) {
@@ -314,9 +331,8 @@
                 gap: 15px;
             }
 
-            .btn {
-                padding: 15px 25px;
-                font-size: 1em;
+            .btn-card {
+                height: 250px;
             }
 
             .btn-main-room {
@@ -362,21 +378,28 @@
         <p class="subtitle">Select a room to join</p>
         
         <div class="buttons-grid">
-            <a href="video-stream.html" class="btn btn-primary">
-                🎥 Room Stream 1
+            <a href="video-stream.html" class="btn-card btn-primary">
+                <img src="https://via.placeholder.com/400x280/667eea/ffffff?text=Room+Stream+1" alt="Room Stream 1" class="btn-card-image">
+                <div class="btn-card-text">🎥 Room Stream 1</div>
             </a>
-            <a href="video-stream2.html" class="btn btn-secondary">
-                🎥 Room Stream 2
+            <a href="video-stream2.html" class="btn-card btn-secondary">
+                <img src="https://via.placeholder.com/400x280/f093fb/ffffff?text=Room+Stream+2" alt="Room Stream 2" class="btn-card-image">
+                <div class="btn-card-text">🎥 Room Stream 2</div>
             </a>
-            <a href="video-stream3.html" class="btn btn-tertiary">
-                🎥 Room Stream 3
+            <a href="video-stream3.html" class="btn-card btn-tertiary">
+                <img src="https://via.placeholder.com/400x280/4facfe/ffffff?text=Room+Stream+3" alt="Room Stream 3" class="btn-card-image">
+                <div class="btn-card-text">🎥 Room Stream 3</div>
             </a>
         </div>
 
         <div class="main-room-container">
-            <a href="video-stream.html" class="btn btn-main-room">
+            <a href="video-stream.html" class="btn-main-room">
                 ⭐ MAIN ROOM STREAM
             </a>
+        </div>
+
+        <div class="session-warning" id="sessionWarning">
+            ⏰ Your session will expire if you close this tab or navigate away without properly logging out.
         </div>
     </div>
 
@@ -411,6 +434,42 @@
 
         console.log('✅ Valid users database loaded:', validUsers.length, 'users');
 
+        // ===== SESSION MANAGEMENT =====
+        
+        // Auto-logout when tab/window is closed
+        window.addEventListener('beforeunload', function() {
+            // This triggers when user closes tab, navigates away, or refreshes
+            const currentUser = localStorage.getItem('currentUser');
+            if (currentUser) {
+                console.log('🚪 User session terminated: Tab closed or page left');
+                localStorage.removeItem('currentUser');
+            }
+        });
+
+        // Auto-logout when browser/tab is closed (not just page navigation)
+        window.addEventListener('unload', function() {
+            const currentUser = localStorage.getItem('currentUser');
+            if (currentUser) {
+                console.log('🚪 User session terminated: Browser/Tab closed');
+                localStorage.removeItem('currentUser');
+            }
+        });
+
+        // Detect if user navigated to a different domain
+        window.addEventListener('pagehide', function(event) {
+            if (event.persisted === false) {
+                // Page is being unloaded
+                const currentUser = localStorage.getItem('currentUser');
+                if (currentUser) {
+                    console.log('🚪 User session terminated: Left the application');
+                    // Clear only when truly leaving the site
+                    if (!window.location.href.includes('localhost') && !window.location.href.includes('127.0.0.1')) {
+                        localStorage.removeItem('currentUser');
+                    }
+                }
+            }
+        });
+
         // Check if user is logged in when page loads
         window.addEventListener('DOMContentLoaded', function() {
             const currentUser = localStorage.getItem('currentUser');
@@ -418,6 +477,7 @@
             
             if (currentUser) {
                 showMainContent(currentUser);
+                showSessionWarning();
             } else {
                 showLoginForm();
             }
@@ -452,6 +512,7 @@
                 
                 // Store user session in localStorage
                 localStorage.setItem('currentUser', username);
+                console.log('💾 User session saved to localStorage');
                 
                 // Clear form
                 document.getElementById('loginForm').reset();
@@ -459,6 +520,7 @@
                 // Show main content after short delay
                 setTimeout(() => {
                     showMainContent(username);
+                    showSessionWarning();
                 }, 500);
             } else {
                 // Invalid credentials
@@ -477,12 +539,18 @@
         function showLoginForm() {
             document.getElementById('loginModal').classList.remove('hidden');
             document.getElementById('mainContent').style.display = 'none';
+            console.log('📋 Login form displayed');
         }
 
         function showMainContent(username) {
             document.getElementById('loginModal').classList.add('hidden');
             document.getElementById('mainContent').style.display = 'block';
             document.getElementById('displayUsername').textContent = username;
+            console.log('✅ Main content displayed for user:', username);
+        }
+
+        function showSessionWarning() {
+            document.getElementById('sessionWarning').classList.add('show');
         }
 
         function logout() {
@@ -491,6 +559,7 @@
             document.getElementById('loginForm').reset();
             document.getElementById('errorMessage').style.display = 'none';
             document.getElementById('successMessage').style.display = 'none';
+            document.getElementById('sessionWarning').classList.remove('show');
             showLoginForm();
         }
 
@@ -500,9 +569,21 @@
                 const currentUser = localStorage.getItem('currentUser');
                 if (!currentUser) {
                     showLoginForm();
+                    console.log('🔄 Page restored: No active session, showing login');
                 } else {
                     showMainContent(currentUser);
+                    showSessionWarning();
+                    console.log('🔄 Page restored: User session active');
                 }
+            }
+        });
+
+        // Additional: Clear session if user tries to go back to login page directly
+        window.addEventListener('popstate', function(event) {
+            console.log('🔙 Back button pressed');
+            const currentUser = localStorage.getItem('currentUser');
+            if (!currentUser) {
+                showLoginForm();
             }
         });
     </script>
