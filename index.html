@@ -297,6 +297,21 @@
             display: block;
         }
 
+        .session-timer {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+            padding: 12px;
+            border-radius: 6px;
+            margin-top: 10px;
+            font-size: 0.9em;
+            display: none;
+        }
+
+        .session-timer.show {
+            display: block;
+        }
+
         @media (max-width: 1024px) {
             .buttons-grid {
                 grid-template-columns: repeat(2, 1fr);
@@ -379,15 +394,15 @@
         
         <div class="buttons-grid">
             <a href="video-stream.html" class="btn-card btn-primary">
-                <img src="https://via.placeholder.com/400x280/667eea/ffffff?text=Room+Stream+1" alt="Room Stream 1" class="btn-card-image">
+                <img src="/images/pict-1.png" alt="Room Stream 1" class="btn-card-image">
                 <div class="btn-card-text">🎥 Room Stream 1</div>
             </a>
             <a href="video-stream2.html" class="btn-card btn-secondary">
-                <img src="https://via.placeholder.com/400x280/f093fb/ffffff?text=Room+Stream+2" alt="Room Stream 2" class="btn-card-image">
+                <img src="/images/pict-1.png" alt="Room Stream 2" class="btn-card-image">
                 <div class="btn-card-text">🎥 Room Stream 2</div>
             </a>
             <a href="video-stream3.html" class="btn-card btn-tertiary">
-                <img src="https://via.placeholder.com/400x280/4facfe/ffffff?text=Room+Stream+3" alt="Room Stream 3" class="btn-card-image">
+                <img src="/images/pict-1.png" alt="Room Stream 3" class="btn-card-image">
                 <div class="btn-card-text">🎥 Room Stream 3</div>
             </a>
         </div>
@@ -399,11 +414,20 @@
         </div>
 
         <div class="session-warning" id="sessionWarning">
-            ⏰ Your session will expire if you close this tab or navigate away without properly logging out.
+            ⏰ <strong>Session Management:</strong> Your session will expire if you close this tab, close the browser, or navigate away without properly logging out.
+        </div>
+
+        <div class="session-timer" id="sessionTimer">
+            ⏱️ <strong>Active Session:</strong> User logged in. Close tab to logout automatically.
         </div>
     </div>
 
     <script>
+        // ===== CONFIGURATION =====
+        const SESSION_TIMEOUT = 30 * 60 * 1000; // 30 minutes (in milliseconds)
+        let sessionTimer = null;
+        let lastActivityTime = Date.now();
+
         // HARDCODED USERS DATABASE (Embedded in HTML)
         const validUsers = [
             {
@@ -436,48 +460,96 @@
 
         // ===== SESSION MANAGEMENT =====
         
-        // Auto-logout when tab/window is closed
-        window.addEventListener('beforeunload', function() {
-            // This triggers when user closes tab, navigates away, or refreshes
+        // Function to clear session and logout
+        function clearSession(reason) {
             const currentUser = localStorage.getItem('currentUser');
             if (currentUser) {
-                console.log('🚪 User session terminated: Tab closed or page left');
+                console.log('🚪 SESSION TERMINATED:', reason);
+                console.log('👤 User logged out:', currentUser);
+                console.log('⏰ Logout time:', new Date().toLocaleTimeString());
                 localStorage.removeItem('currentUser');
+                clearSessionTimer();
             }
+        }
+
+        // Clear session timer
+        function clearSessionTimer() {
+            if (sessionTimer) {
+                clearInterval(sessionTimer);
+                sessionTimer = null;
+            }
+        }
+
+        // Start inactivity timer
+        function startSessionTimer() {
+            clearSessionTimer();
+            lastActivityTime = Date.now();
+            
+            sessionTimer = setInterval(() => {
+                const currentTime = Date.now();
+                const timeElapsed = currentTime - lastActivityTime;
+
+                if (timeElapsed > SESSION_TIMEOUT) {
+                    console.log('🔔 SESSION TIMEOUT: User inactive for too long');
+                    clearSession('Inactivity timeout');
+                    showLoginForm();
+                    alert('⏱️ Your session has expired due to inactivity. Please login again.');
+                }
+            }, 5000); // Check every 5 seconds
+        }
+
+        // Track user activity
+        function updateActivityTime() {
+            lastActivityTime = Date.now();
+        }
+
+        // Listen for user activity
+        document.addEventListener('click', updateActivityTime);
+        document.addEventListener('keypress', updateActivityTime);
+        document.addEventListener('mousemove', updateActivityTime);
+        document.addEventListener('touchstart', updateActivityTime);
+
+        // ===== WINDOW/TAB CLOSE HANDLERS =====
+        
+        // Auto-logout when tab/window is closed
+        window.addEventListener('beforeunload', function() {
+            clearSession('Tab/Window closed - beforeunload event');
         });
 
         // Auto-logout when browser/tab is closed (not just page navigation)
         window.addEventListener('unload', function() {
-            const currentUser = localStorage.getItem('currentUser');
-            if (currentUser) {
-                console.log('🚪 User session terminated: Browser/Tab closed');
-                localStorage.removeItem('currentUser');
-            }
+            clearSession('Browser/Tab closed - unload event');
         });
 
         // Detect if user navigated to a different domain
         window.addEventListener('pagehide', function(event) {
             if (event.persisted === false) {
-                // Page is being unloaded
-                const currentUser = localStorage.getItem('currentUser');
-                if (currentUser) {
-                    console.log('🚪 User session terminated: Left the application');
-                    // Clear only when truly leaving the site
-                    if (!window.location.href.includes('localhost') && !window.location.href.includes('127.0.0.1')) {
-                        localStorage.removeItem('currentUser');
-                    }
-                }
+                clearSession('User navigated away from page');
             }
         });
+
+        // Detect if user closes the window
+        window.addEventListener('beforeunload', function(e) {
+            const currentUser = localStorage.getItem('currentUser');
+            if (currentUser) {
+                console.log('🔴 WINDOW CLOSE DETECTED - Clearing session');
+                clearSession('Window close detected');
+            }
+        });
+
+        // ===== PAGE LOAD & LOGIN HANDLERS =====
 
         // Check if user is logged in when page loads
         window.addEventListener('DOMContentLoaded', function() {
             const currentUser = localStorage.getItem('currentUser');
-            console.log('📌 Current user from storage:', currentUser);
+            console.log('📌 Page loaded. Current user from storage:', currentUser);
+            console.log('⏰ Current time:', new Date().toLocaleTimeString());
             
             if (currentUser) {
                 showMainContent(currentUser);
                 showSessionWarning();
+                startSessionTimer();
+                console.log('✅ Session timer started');
             } else {
                 showLoginForm();
             }
@@ -491,6 +563,7 @@
             const password = document.getElementById('password').value;
             
             console.log('🔐 Login attempt:', username);
+            console.log('⏰ Login time:', new Date().toLocaleTimeString());
             
             // Hide previous messages
             document.getElementById('errorMessage').style.display = 'none';
@@ -507,12 +580,14 @@
 
             if (user) {
                 // Valid credentials
-                console.log('✅ Login successful! User:', user.username, 'ID:', user.id);
+                console.log('✅ Login successful!');
+                console.log('   User:', user.username, '| ID:', user.id, '| Email:', user.email);
                 document.getElementById('successMessage').style.display = 'block';
                 
                 // Store user session in localStorage
                 localStorage.setItem('currentUser', username);
                 console.log('💾 User session saved to localStorage');
+                console.log('⏰ Session start time:', new Date().toLocaleTimeString());
                 
                 // Clear form
                 document.getElementById('loginForm').reset();
@@ -521,6 +596,8 @@
                 setTimeout(() => {
                     showMainContent(username);
                     showSessionWarning();
+                    startSessionTimer();
+                    console.log('✅ Session timer started for user:', username);
                 }, 500);
             } else {
                 // Invalid credentials
@@ -540,6 +617,7 @@
             document.getElementById('loginModal').classList.remove('hidden');
             document.getElementById('mainContent').style.display = 'none';
             console.log('📋 Login form displayed');
+            clearSessionTimer();
         }
 
         function showMainContent(username) {
@@ -551,15 +629,21 @@
 
         function showSessionWarning() {
             document.getElementById('sessionWarning').classList.add('show');
+            document.getElementById('sessionTimer').classList.add('show');
         }
 
         function logout() {
-            console.log('🚪 Logging out user');
-            localStorage.removeItem('currentUser');
+            console.log('🚪 Manual logout initiated');
+            const currentUser = localStorage.getItem('currentUser');
+            console.log('👤 User logging out:', currentUser);
+            console.log('⏰ Logout time:', new Date().toLocaleTimeString());
+            
+            clearSession('Manual logout');
             document.getElementById('loginForm').reset();
             document.getElementById('errorMessage').style.display = 'none';
             document.getElementById('successMessage').style.display = 'none';
             document.getElementById('sessionWarning').classList.remove('show');
+            document.getElementById('sessionTimer').classList.remove('show');
             showLoginForm();
         }
 
@@ -573,7 +657,8 @@
                 } else {
                     showMainContent(currentUser);
                     showSessionWarning();
-                    console.log('🔄 Page restored: User session active');
+                    startSessionTimer();
+                    console.log('🔄 Page restored: User session active - timer restarted');
                 }
             }
         });
