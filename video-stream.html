@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Stream</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #1a1a1a;
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1000px;
+            background-color: #2d2d2d;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        .video-wrapper {
+            position: relative;
+            width: 100%;
+            padding-bottom: 56.25%;
+            height: 0;
+            overflow: hidden;
+            background-color: #000;
+        }
+
+        .video-wrapper iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .video-info {
+            padding: 30px;
+        }
+
+        .video-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .video-description {
+            font-size: 14px;
+            line-height: 1.6;
+            color: #ccc;
+            margin-bottom: 20px;
+        }
+
+        .video-stats {
+            display: flex;
+            gap: 20px;
+            font-size: 13px;
+            color: #aaa;
+        }
+
+        .stat {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #444;
+        }
+
+        .nav-links a {
+            color: #4CAF50;
+            text-decoration: none;
+            font-size: 14px;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: #45a049;
+        }
+
+        @media (max-width: 768px) {
+            .video-title {
+                font-size: 18px;
+            }
+
+            .video-stats {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .video-info {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="video-wrapper">
+            <!-- Kick Stream Embed -->
+            <iframe 
+                src="https://player.kick.com/lyz-1004" 
+                height="720" 
+                width="1280"
+                frameborder="0" 
+                scrolling="no" 
+                allowfullscreen="true"> 
+            </iframe>
+        </div>
+
+        <div class="video-info">
+            <div class="video-title">Live Video Stream</div>
+            <div class="video-description">
+                Welcome to the video stream page. Replace the iframe src with your actual video stream URL.
+                This template supports YouTube, Twitch, Vimeo, and other embeddable video platforms.
+            </div>
+
+            <div class="video-stats">
+                <div class="stat">
+                    <span>📺</span>
+                    <span>Streaming Quality: 1080p</span>
+                </div>
+                <div class="stat">
+                    <span>👥</span>
+                    <span>Live Viewers: Loading...</span>
+                </div>
+            </div>
+
+            <div class="nav-links">
+                <a href="index.html">← Back Home</a>
+                <a href="#" onclick="toggleFullscreen()">Fullscreen</a>
+                <a href="#" onclick="copyStreamLink()">Share Link</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleFullscreen() {
+            const videoWrapper = document.querySelector('.video-wrapper');
+            if (!document.fullscreenElement) {
+                videoWrapper.requestFullscreen().catch(err => {
+                    alert(`Error attempting to enable fullscreen: ${err.message}`);
+                });
+            } else {
+                document.exitFullscreen();
+            }
+        }
+
+        function copyStreamLink() {
+            const url = window.location.href;
+            navigator.clipboard.writeText(url).then(() => {
+                alert('Stream link copied to clipboard!');
+            }).catch(err => {
+                alert('Failed to copy link: ' + err);
+            });
+        }
+
+        // Update viewer count (example - modify based on your backend)
+        function updateViewerCount() {
+            const stat = document.querySelector('.stat:nth-child(2) span:last-child');
+            if (stat) {
+                const count = Math.floor(Math.random() * 1000) + 1;
+                stat.textContent = `Live Viewers: ${count}`;
+            }
+        }
+
+        // Call updateViewerCount every 5 seconds
+        setInterval(updateViewerCount, 5000);
+    </script>
+</body>
+</html>
