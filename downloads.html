@@ -17,7 +17,6 @@
             padding: 40px 20px;
         }
 
-        /* Ambient orbs */
         .orb {
             position: fixed; border-radius: 50%; pointer-events: none; z-index: 0;
         }
@@ -47,7 +46,6 @@
             to   { opacity: 1; transform: translateY(0) scale(1); }
         }
 
-        /* Main card */
         .card {
             position: relative; z-index: 1;
             width: 100%; max-width: 520px;
@@ -63,8 +61,6 @@
                 inset 0 -1px 0 rgba(255,255,255,0.03);
             animation: cardIn 0.5s cubic-bezier(0.34,1.56,0.64,1) both;
         }
-
-        /* Shimmer line at top of card */
         .card::before {
             content: '';
             position: absolute;
@@ -74,7 +70,6 @@
             border-radius: 999px;
         }
 
-        /* Header */
         .page-label {
             color: rgba(255,255,255,0.35);
             font-size: 11px;
@@ -98,34 +93,34 @@
             line-height: 1.6;
             margin-bottom: 36px;
         }
-
-        /* Divider */
         .divider {
-            width: 100%;
-            height: 1px;
+            width: 100%; height: 1px;
             background: rgba(255,255,255,0.07);
             margin-bottom: 28px;
         }
 
-        /* Download buttons */
-        .download-list {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            margin-bottom: 32px;
-        }
+        /* ── Dropdown wrapper ── */
+        .download-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 32px; }
+
+        .dropdown-wrapper { position: relative; }
 
         .download-btn {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            text-decoration: none;
+            width: 100%;
             padding: 18px 20px;
             border-radius: 16px;
             border: 1px solid rgba(255,255,255,0.09);
-            transition: transform 0.22s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.22s ease, border-color 0.2s;
-            position: relative;
-            overflow: hidden;
+            background: none;
+            color: #fff;
+            font-family: inherit;
+            font-size: 15px;
+            font-weight: 600;
+            letter-spacing: -0.01em;
+            cursor: pointer;
+            position: relative; overflow: hidden;
+            transition: transform 0.22s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.22s ease, border-radius 0.2s ease;
             animation: cardIn 0.5s cubic-bezier(0.34,1.56,0.64,1) both;
         }
         .download-btn::after {
@@ -134,92 +129,125 @@
             background: linear-gradient(135deg, rgba(255,255,255,0.06) 0%, transparent 60%);
             opacity: 0; transition: opacity 0.2s;
         }
-        .download-btn:hover { transform: translateY(-4px) scale(1.01); }
+        .download-btn:hover:not(.open) { transform: translateY(-3px); }
         .download-btn:hover::after { opacity: 1; }
+        .download-btn.open { border-radius: 16px 16px 0 0; border-bottom-color: transparent; transform: none; }
 
         .btn-artist {
             background: linear-gradient(135deg, #1c1c3a 0%, #0f1a35 100%);
             box-shadow: 0 0 0 1px rgba(120,130,255,0.1), 0 4px 20px rgba(0,0,0,0.35);
             animation-delay: 0.08s;
         }
-        .btn-artist:hover {
+        .btn-artist:hover, .btn-artist.open {
             border-color: rgba(120,130,255,0.35);
-            box-shadow: 0 0 0 1px rgba(120,130,255,0.4), 0 14px 36px rgba(80,100,255,0.22);
+            box-shadow: 0 0 0 1px rgba(120,130,255,0.35), 0 12px 32px rgba(80,100,255,0.2);
         }
-
         .btn-x {
             background: linear-gradient(135deg, #2a1a30 0%, #1a0f28 100%);
             box-shadow: 0 0 0 1px rgba(200,120,255,0.1), 0 4px 20px rgba(0,0,0,0.35);
             animation-delay: 0.14s;
         }
-        .btn-x:hover {
+        .btn-x:hover, .btn-x.open {
             border-color: rgba(200,120,255,0.35);
-            box-shadow: 0 0 0 1px rgba(200,120,255,0.4), 0 14px 36px rgba(160,80,255,0.22);
+            box-shadow: 0 0 0 1px rgba(200,120,255,0.35), 0 12px 32px rgba(160,80,255,0.2);
         }
-
         .btn-mcountdown {
             background: linear-gradient(135deg, #0e2240 0%, #091830 100%);
             box-shadow: 0 0 0 1px rgba(80,160,255,0.1), 0 4px 20px rgba(0,0,0,0.35);
             animation-delay: 0.2s;
         }
-        .btn-mcountdown:hover {
+        .btn-mcountdown:hover, .btn-mcountdown.open {
             border-color: rgba(80,160,255,0.35);
-            box-shadow: 0 0 0 1px rgba(80,160,255,0.4), 0 14px 36px rgba(30,120,255,0.22);
+            box-shadow: 0 0 0 1px rgba(80,160,255,0.35), 0 12px 32px rgba(30,120,255,0.2);
         }
 
-        .btn-label {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-        }
+        .btn-label { display: flex; align-items: center; gap: 14px; }
         .btn-icon-wrap {
-            width: 38px; height: 38px;
-            border-radius: 10px;
+            width: 38px; height: 38px; border-radius: 10px;
             background: rgba(255,255,255,0.07);
             border: 1px solid rgba(255,255,255,0.09);
             display: flex; align-items: center; justify-content: center;
-            font-size: 17px;
-            flex-shrink: 0;
+            font-size: 17px; flex-shrink: 0;
         }
-        .btn-text { display: flex; flex-direction: column; gap: 2px; }
         .btn-name { color: #fff; font-size: 15px; font-weight: 600; letter-spacing: -0.01em; }
-        .btn-meta { color: rgba(255,255,255,0.3); font-size: 11px; font-weight: 500; }
 
-        .dl-arrow {
-            width: 32px; height: 32px;
-            border-radius: 8px;
+        .btn-arrow {
+            width: 28px; height: 28px; border-radius: 8px;
             background: rgba(255,255,255,0.07);
             border: 1px solid rgba(255,255,255,0.09);
             display: flex; align-items: center; justify-content: center;
             flex-shrink: 0;
+            transition: transform 0.3s ease, background 0.2s;
         }
-        .dl-arrow svg { width: 14px; height: 14px; stroke: rgba(255,255,255,0.55); }
+        .btn-arrow svg { width: 12px; height: 12px; stroke: rgba(255,255,255,0.5); transition: transform 0.3s ease; }
+        .download-btn.open .btn-arrow svg { transform: rotate(180deg); }
+        .download-btn.open .btn-arrow { background: rgba(255,255,255,0.12); }
 
-        /* Footer actions */
-        .footer-actions {
+        /* ── Dropdown menu ── */
+        .dropdown-menu {
+            display: none;
+            flex-direction: column;
+            border: 1px solid rgba(255,255,255,0.09);
+            border-top: none;
+            border-radius: 0 0 16px 16px;
+            overflow: hidden;
+        }
+        .dropdown-menu.open { display: flex; }
+
+        .dropdown-item {
             display: flex;
             align-items: center;
             justify-content: space-between;
+            padding: 14px 20px;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            color: rgba(255,255,255,0.75);
+            transition: background 0.18s, color 0.18s;
+            border-top: 1px solid rgba(255,255,255,0.06);
+        }
+        .dropdown-item:first-child { border-top: none; }
+        .dropdown-item:hover { color: #fff; }
+
+        #dropdown-artist .dropdown-item { background: rgba(28,28,58,0.9); }
+        #dropdown-artist .dropdown-item:hover { background: rgba(50,50,100,0.9); }
+
+        #dropdown-xstage .dropdown-item { background: rgba(42,26,48,0.9); }
+        #dropdown-xstage .dropdown-item:hover { background: rgba(70,30,80,0.9); }
+
+        #dropdown-mcountdown .dropdown-item { background: rgba(14,34,64,0.9); }
+        #dropdown-mcountdown .dropdown-item:hover { background: rgba(20,50,100,0.9); }
+
+        .day-label { display: flex; align-items: center; gap: 10px; }
+        .day-icon { font-size: 13px; opacity: 0.6; }
+
+        .dl-arrow-sm {
+            width: 26px; height: 26px; border-radius: 7px;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.08);
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0;
+        }
+        .dl-arrow-sm svg { width: 11px; height: 11px; stroke: rgba(255,255,255,0.4); }
+
+        /* ── Footer ── */
+        .footer-actions {
+            display: flex; align-items: center; justify-content: space-between;
             padding-top: 4px;
         }
         .nav-back {
             display: flex; align-items: center; gap: 6px;
-            color: rgba(255,255,255,0.35);
-            text-decoration: none;
-            font-size: 13px; font-weight: 500;
-            transition: color 0.2s;
+            color: rgba(255,255,255,0.35); text-decoration: none;
+            font-size: 13px; font-weight: 500; transition: color 0.2s;
         }
         .nav-back:hover { color: rgba(255,255,255,0.7); }
         .nav-back svg { width: 14px; height: 14px; stroke: currentColor; }
-
         .logout-btn {
             padding: 9px 18px;
             background: rgba(255,59,48,0.12);
             border: 1px solid rgba(255,59,48,0.25);
-            color: #f87171;
-            font-size: 13px; font-weight: 600;
-            border-radius: 10px; cursor: pointer;
-            font-family: inherit;
+            color: #f87171; font-size: 13px; font-weight: 600;
+            border-radius: 10px; cursor: pointer; font-family: inherit;
             transition: background 0.2s;
         }
         .logout-btn:hover { background: rgba(255,59,48,0.22); }
@@ -227,7 +255,6 @@
         @media (max-width: 480px) {
             .card { padding: 36px 24px 32px; }
             h1 { font-size: 26px; }
-            .btn-name { font-size: 14px; }
         }
     </style>
 </head>
@@ -238,55 +265,99 @@
     <div class="card">
         <p class="page-label">KCON 2026 · Stream Rooms</p>
         <h1>Download<br><span>Repository</span></h1>
-        <p class="subtitle">Choose a stage below to access its media folder.</p>
+        <p class="subtitle">Select a stage, then choose your day to download.</p>
 
         <div class="divider"></div>
 
         <div class="download-list">
-            <a href="https://www.mediafire.com/folder/tvuvlslpz6l5q/Artist_Stage" target="_blank" class="download-btn btn-artist">
-                <div class="btn-label">
-                    <div class="btn-icon-wrap">🎤</div>
-                    <div class="btn-text">
+
+            <!-- Artist Stage -->
+            <div class="dropdown-wrapper">
+                <button class="download-btn btn-artist" onclick="toggleDropdown('artist')">
+                    <div class="btn-label">
+                        <div class="btn-icon-wrap">🎤</div>
                         <span class="btn-name">Artist Stage</span>
-                        <span class="btn-meta">Mediafire · Folder</span>
                     </div>
+                    <div class="btn-arrow">
+                        <svg viewBox="0 0 12 12" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M2 4l4 4 4-4"/>
+                        </svg>
+                    </div>
+                </button>
+                <div class="dropdown-menu" id="dropdown-artist">
+                    <a href="https://www.mediafire.com/folder/tvuvlslpz6l5q/Artist_Stage" target="_blank" class="dropdown-item">
+                        <span class="day-label"><span class="day-icon">📅</span> Day 1</span>
+                        <div class="dl-arrow-sm"><svg viewBox="0 0 16 16" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3v7M5 7l3 3 3-3M3 13h10"/></svg></div>
+                    </a>
+                    <a href="https://www.mediafire.com/folder/w5mey9enwnn0b/X+STAGE+-+DAY+2" target="_blank" class="dropdown-item">
+                        <span class="day-label"><span class="day-icon">📅</span> Day 2</span>
+                        <div class="dl-arrow-sm"><svg viewBox="0 0 16 16" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3v7M5 7l3 3 3-3M3 13h10"/></svg></div>
+                    </a>
+                    <a href="https://www.mediafire.com/folder/vjjzbiussz74a/X+STAGE+-+DAY+3" target="_blank" class="dropdown-item">
+                        <span class="day-label"><span class="day-icon">📅</span> Day 3</span>
+                        <div class="dl-arrow-sm"><svg viewBox="0 0 16 16" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3v7M5 7l3 3 3-3M3 13h10"/></svg></div>
+                    </a>
                 </div>
-                <div class="dl-arrow">
-                    <svg viewBox="0 0 16 16" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M8 3v7M5 7l3 3 3-3M3 13h10"/>
-                    </svg>
-                </div>
-            </a>
+            </div>
 
-            <a href="https://www.mediafire.com/folder/j47uluqxeftiz/X_Stage" target="_blank" class="download-btn btn-x">
-                <div class="btn-label">
-                    <div class="btn-icon-wrap">⭐</div>
-                    <div class="btn-text">
+            <!-- X Stage -->
+            <div class="dropdown-wrapper">
+                <button class="download-btn btn-x" onclick="toggleDropdown('xstage')">
+                    <div class="btn-label">
+                        <div class="btn-icon-wrap">⭐</div>
                         <span class="btn-name">X Stage</span>
-                        <span class="btn-meta">Mediafire · Folder</span>
                     </div>
+                    <div class="btn-arrow">
+                        <svg viewBox="0 0 12 12" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M2 4l4 4 4-4"/>
+                        </svg>
+                    </div>
+                </button>
+                <div class="dropdown-menu" id="dropdown-xstage">
+                    <a href="https://www.mediafire.com/folder/j47uluqxeftiz/X_Stage" target="_blank" class="dropdown-item">
+                        <span class="day-label"><span class="day-icon">📅</span> Day 1</span>
+                        <div class="dl-arrow-sm"><svg viewBox="0 0 16 16" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3v7M5 7l3 3 3-3M3 13h10"/></svg></div>
+                    </a>
+                    <a href="https://www.mediafire.com/folder/460yhu1rbs407/DAY+2" target="_blank" class="dropdown-item">
+                        <span class="day-label"><span class="day-icon">📅</span> Day 2</span>
+                        <div class="dl-arrow-sm"><svg viewBox="0 0 16 16" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3v7M5 7l3 3 3-3M3 13h10"/></svg></div>
+                    </a>
+                    <a href="https://www.mediafire.com/folder/riy0h6z7t5knx/DAY+3" target="_blank" class="dropdown-item">
+                        <span class="day-label"><span class="day-icon">📅</span> Day 3</span>
+                        <div class="dl-arrow-sm"><svg viewBox="0 0 16 16" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3v7M5 7l3 3 3-3M3 13h10"/></svg></div>
+                    </a>
                 </div>
-                <div class="dl-arrow">
-                    <svg viewBox="0 0 16 16" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M8 3v7M5 7l3 3 3-3M3 13h10"/>
-                    </svg>
-                </div>
-            </a>
+            </div>
 
-            <a href="https://www.mediafire.com/folder/o77fimimhrpe6/Mcountdown_Stage" target="_blank" class="download-btn btn-mcountdown">
-                <div class="btn-label">
-                    <div class="btn-icon-wrap">🏆</div>
-                    <div class="btn-text">
+            <!-- Mcountdown Stage -->
+            <div class="dropdown-wrapper">
+                <button class="download-btn btn-mcountdown" onclick="toggleDropdown('mcountdown')">
+                    <div class="btn-label">
+                        <div class="btn-icon-wrap">🏆</div>
                         <span class="btn-name">Mcountdown Stage</span>
-                        <span class="btn-meta">Mediafire · Folder</span>
                     </div>
+                    <div class="btn-arrow">
+                        <svg viewBox="0 0 12 12" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M2 4l4 4 4-4"/>
+                        </svg>
+                    </div>
+                </button>
+                <div class="dropdown-menu" id="dropdown-mcountdown">
+                    <a href="https://www.mediafire.com/folder/mot00nhsdltct/Mcountdown_-_Day_1" target="_blank" class="dropdown-item">
+                        <span class="day-label"><span class="day-icon">📅</span> Day 1</span>
+                        <div class="dl-arrow-sm"><svg viewBox="0 0 16 16" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3v7M5 7l3 3 3-3M3 13h10"/></svg></div>
+                    </a>
+                    <a href="https://www.mediafire.com/folder/te8acmod6fpwo/Mcountdown_-_Day_2" target="_blank" class="dropdown-item">
+                        <span class="day-label"><span class="day-icon">📅</span> Day 2</span>
+                        <div class="dl-arrow-sm"><svg viewBox="0 0 16 16" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3v7M5 7l3 3 3-3M3 13h10"/></svg></div>
+                    </a>
+                    <a href="https://www.mediafire.com/folder/dgl1yfdj3yq99/Mcountdown_-_Day_3" target="_blank" class="dropdown-item">
+                        <span class="day-label"><span class="day-icon">📅</span> Day 3</span>
+                        <div class="dl-arrow-sm"><svg viewBox="0 0 16 16" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3v7M5 7l3 3 3-3M3 13h10"/></svg></div>
+                    </a>
                 </div>
-                <div class="dl-arrow">
-                    <svg viewBox="0 0 16 16" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M8 3v7M5 7l3 3 3-3M3 13h10"/>
-                    </svg>
-                </div>
-            </a>
+            </div>
+
         </div>
 
         <div class="footer-actions">
@@ -301,6 +372,27 @@
     </div>
 
     <script>
+        function toggleDropdown(id) {
+            const menu = document.getElementById('dropdown-' + id);
+            const btn = menu.previousElementSibling;
+            const isOpen = menu.classList.contains('open');
+
+            document.querySelectorAll('.dropdown-menu').forEach(m => m.classList.remove('open'));
+            document.querySelectorAll('.download-btn').forEach(b => b.classList.remove('open'));
+
+            if (!isOpen) {
+                menu.classList.add('open');
+                btn.classList.add('open');
+            }
+        }
+
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.dropdown-wrapper')) {
+                document.querySelectorAll('.dropdown-menu').forEach(m => m.classList.remove('open'));
+                document.querySelectorAll('.download-btn').forEach(b => b.classList.remove('open'));
+            }
+        });
+
         (async function() {
             try {
                 const res = await fetch('/api/session', { credentials: 'same-origin' });
