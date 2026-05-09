@@ -28,6 +28,21 @@ app.use(session({
 // Path to users.json
 const usersFilePath = path.join(__dirname, 'users.json');
 
+// Path to streams.json
+const streamsFilePath = path.join(__dirname, 'streams.json');
+
+function readStreams() {
+  try {
+    return JSON.parse(fs.readFileSync(streamsFilePath, 'utf8'));
+  } catch (e) {
+    return { rooms: [] };
+  }
+}
+
+function writeStreams(data) {
+  fs.writeFileSync(streamsFilePath, JSON.stringify(data, null, 2), 'utf8');
+}
+
 // Helper function to read users from JSON
 function readUsers() {
   try {
@@ -59,6 +74,27 @@ function requireAuth(req, res, next) {
   res.redirect(`/index.html?authRequired=1&redirect=${redirect}`);
 }
 
+
+// ── Streams API ──
+// Get all room live statuses (public)
+app.get('/api/streams', (req, res) => {
+  res.json(readStreams());
+});
+
+// Toggle a room's live status (admin only — must be logged in)
+app.patch('/api/streams/:id', (req, res) => {
+  if (!req.session || !req.session.user) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+  const id = parseInt(req.params.id);
+  const { live } = req.body;
+  const data = readStreams();
+  const room = data.rooms.find(r => r.id === id);
+  if (!room) return res.status(404).json({ error: 'Room not found' });
+  room.live = !!live;
+  writeStreams(data);
+  res.json({ success: true, room });
+});
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
