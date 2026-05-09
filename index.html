@@ -11,7 +11,6 @@
             font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', sans-serif;
             background: #000;
             min-height: 100vh;
-            overflow: hidden;
         }
 
         /* ── WELCOME PAGE (login) ── */
@@ -257,36 +256,65 @@
         .room-card {
             display: flex; align-items: center; justify-content: center;
             text-decoration: none;
-            width: 250px; height: 90px;
-            border-radius: 16px;
+            width: 250px; height: 100px;
+            border-radius: 18px;
             font-size: 15px; font-weight: 600;
             color: #fff; letter-spacing: -0.01em;
-            transition: transform 0.2s, box-shadow 0.2s;
+            position: relative; overflow: hidden;
+            transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.25s ease;
+            animation: cardIn 0.5s cubic-bezier(0.34,1.56,0.64,1) both;
         }
-        .room-card:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(0,0,0,0.4); }
-        .room-1 { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border: 1px solid rgba(255,255,255,0.1); }
-        .room-2 { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border: 1px solid rgba(255,255,255,0.1); }
+        .room-card::after {
+            content: ''; position: absolute; inset: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,0.08) 0%, transparent 60%);
+            opacity: 0; transition: opacity 0.25s;
+        }
+        .room-card:hover { transform: translateY(-6px) scale(1.02); }
+        .room-card:hover::after { opacity: 1; }
+        .room-1 {
+            background: linear-gradient(135deg, #1c1c3a 0%, #0f1a35 100%);
+            border: 1px solid rgba(120,130,255,0.25);
+            box-shadow: 0 0 0 1px rgba(120,130,255,0.1), 0 4px 20px rgba(0,0,0,0.4);
+            animation-delay: 0.05s;
+        }
+        .room-1:hover { box-shadow: 0 0 0 1px rgba(120,130,255,0.4), 0 16px 40px rgba(80,100,255,0.25); }
+        .room-2 {
+            background: linear-gradient(135deg, #2a1a30 0%, #1a0f28 100%);
+            border: 1px solid rgba(200,120,255,0.25);
+            box-shadow: 0 0 0 1px rgba(200,120,255,0.1), 0 4px 20px rgba(0,0,0,0.4);
+            animation-delay: 0.1s;
+        }
+        .room-2:hover { box-shadow: 0 0 0 1px rgba(200,120,255,0.4), 0 16px 40px rgba(160,80,255,0.25); }
 
         .main-room-wrap { display: flex; justify-content: center; margin-bottom: 12px; }
         .room-main {
             display: flex; align-items: center; justify-content: center;
             text-decoration: none;
-            width: 300px; height: 90px;
-            border-radius: 16px;
+            width: 300px; height: 100px;
+            border-radius: 18px;
             font-size: 16px; font-weight: 700;
             color: #000; letter-spacing: -0.01em;
             background: #fff;
-            transition: transform 0.2s, box-shadow 0.2s;
-            box-shadow: 0 0 0 1px rgba(255,255,255,0.2);
+            position: relative; overflow: hidden;
+            transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.25s ease;
+            box-shadow: 0 0 0 1px rgba(255,255,255,0.3), 0 4px 20px rgba(255,255,255,0.06);
+            animation: cardIn 0.5s cubic-bezier(0.34,1.56,0.64,1) 0.15s both;
         }
-        .room-main:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(255,255,255,0.12); }
+        .room-main:hover { transform: translateY(-6px) scale(1.02); box-shadow: 0 0 0 1px rgba(255,255,255,0.5), 0 20px 48px rgba(255,255,255,0.14); }
 
         .room-downloads {
-            background: linear-gradient(135deg, #1565c0 0%, #0d47a1 100%) !important;
+            background: linear-gradient(135deg, #1a3a6e 0%, #0d2a5c 100%) !important;
             color: #fff !important;
-            border: 1px solid rgba(255,255,255,0.1);
+            border: 1px solid rgba(100,160,255,0.3) !important;
+            box-shadow: 0 0 0 1px rgba(100,160,255,0.1), 0 4px 20px rgba(0,0,0,0.4) !important;
+            animation-delay: 0.2s;
         }
-        .room-downloads:hover { box-shadow: 0 12px 32px rgba(21,101,192,0.35) !important; }
+        .room-downloads:hover { box-shadow: 0 0 0 1px rgba(100,160,255,0.45), 0 20px 48px rgba(30,100,255,0.28) !important; }
+
+        @keyframes cardIn {
+            from { opacity: 0; transform: translateY(22px) scale(0.96); }
+            to   { opacity: 1; transform: translateY(0) scale(1); }
+        }
 
         .session-warning, .session-timer {
             background: rgba(255,255,255,0.04);
@@ -563,13 +591,16 @@
     function showWelcome() {
         document.getElementById('welcomePage').style.display = 'flex';
         document.getElementById('dashboardPage').style.display = 'none';
+        document.body.style.overflow = 'hidden';
         closeLoginForm();
         console.log('📋 Login form displayed');
     }
     function showDashboard(uname) {
         document.getElementById('welcomePage').style.display = 'none';
         document.getElementById('dashboardPage').style.display = 'block';
+        document.body.style.overflow = 'auto';
         document.getElementById('displayUsername').textContent = uname;
+        window.scrollTo(0, 0);
         console.log('✅ Main content displayed for user:', uname);
     }
     function showSessionWarning() {
