@@ -11,12 +11,12 @@ REPO_URL="https://x-access-token:${GITHUB_TOKEN}@github.com/twswithcrew009-lgtm/
 git add -A
 
 if git diff --cached --quiet; then
-  echo "✅ Nothing to commit — everything is up to date."
-  exit 0
+  echo "📦 Nothing new to commit — pushing existing commits to GitHub..."
+else
+  TIMESTAMP=$(date "+%Y-%m-%d %H:%M:%S")
+  git commit -m "Auto-sync: $TIMESTAMP"
+  echo "✅ Committed changes."
 fi
-
-TIMESTAMP=$(date "+%Y-%m-%d %H:%M:%S")
-git commit -m "Auto-sync: $TIMESTAMP"
 
 git push "$REPO_URL" main
 echo "✅ Changes pushed to GitHub successfully!"
