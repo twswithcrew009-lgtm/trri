@@ -97,8 +97,12 @@ function requireAuth(req, res, next) {
 
 
 // ── Streams API ──
-// Get all room live statuses (public)
+// Get all room live statuses (public — never cached)
 app.get('/api/streams', (req, res) => {
+  res.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+  res.set('Pragma', 'no-cache');
+  res.set('Expires', '0');
+  res.set('Surrogate-Control', 'no-store');
   res.json(readStreams());
 });
 
@@ -112,6 +116,7 @@ function handleStreamToggle(req, res) {
   if (!room) return res.status(404).json({ error: 'Room not found' });
   room.live = !!live;
   writeStreams(data);
+  console.log(`[streams] Room ${id} (${room.name}) set to live=${room.live} — state:`, data.rooms.map(r => `${r.name}:${r.live}`).join(', '));
   res.json({ success: true, room });
 }
 app.patch('/api/streams/:id', handleStreamToggle); // keep for backwards compat
