@@ -31,16 +31,24 @@ const usersFilePath = path.join(__dirname, 'users.json');
 // Path to streams.json
 const streamsFilePath = path.join(__dirname, 'streams.json');
 
-function readStreams() {
-  try {
-    return JSON.parse(fs.readFileSync(streamsFilePath, 'utf8'));
-  } catch (e) {
-    return { rooms: [] };
-  }
-}
+// In-memory streams state — loaded from file at startup, updated via PATCH
+let streamsState = {
+  rooms: [
+    { id: 1, name: 'Artist Stage',     live: false },
+    { id: 2, name: 'X Stage',          live: false },
+    { id: 3, name: 'Mcountdown Stage', live: false }
+  ]
+};
+try {
+  const saved = JSON.parse(fs.readFileSync(streamsFilePath, 'utf8'));
+  if (saved && Array.isArray(saved.rooms)) streamsState = saved;
+} catch (e) { /* use defaults */ }
 
+function readStreams()      { return streamsState; }
 function writeStreams(data) {
-  fs.writeFileSync(streamsFilePath, JSON.stringify(data, null, 2), 'utf8');
+  streamsState = data;
+  // Best-effort persist — works on Replit, silently skipped on read-only hosts
+  try { fs.writeFileSync(streamsFilePath, JSON.stringify(data, null, 2), 'utf8'); } catch (e) {}
 }
 
 // Helper function to read users from JSON
