@@ -61,6 +61,9 @@
         .left-brand p { color: rgba(255,255,255,0.55); font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; font-weight: 600; }
         .left-brand span { color: rgba(255,255,255,0.28); font-size: 11px; display: block; margin-top: 3px; }
 
+        /* Mobile pill hidden on desktop */
+        .mobile-island { display: none; }
+
         /* Dynamic Island */
         .dynamic-island {
             position: absolute; bottom: 32px; left: 0; right: 50%;
@@ -378,8 +381,11 @@
                 z-index: 0;
             }
 
-            /* Dynamic Island: fixed to visible viewport on mobile */
-            .dynamic-island { position: fixed; bottom: 28px; left: 0; right: 0; padding: 0 20px; z-index: 9999; }
+            /* Hide floating pill on mobile — use inline one instead */
+            .dynamic-island { display: none; }
+
+            /* Mobile inline pill below login box */
+            .mobile-island { display: flex; justify-content: center; margin-top: 28px; width: 100%; }
             .island-pill { gap: 8px; padding: 8px 12px; }
             .island-stages { gap: 6px; }
             .island-stage { font-size: 10px; }
@@ -512,6 +518,27 @@
                         <button type="submit" class="submit-btn" id="submitBtn">Sign In</button>
                     </div>
                 </form>
+            </div>
+        </div>
+
+        <!-- Mobile-only LIVE pill shown below login box -->
+        <div class="mobile-island">
+            <div class="island-pill">
+                <div class="island-dot-wrap">
+                    <div class="island-dot-ping"></div>
+                    <div class="island-dot"></div>
+                </div>
+                <div class="island-stages">
+                    <span class="island-stage">Artist Stage</span>
+                    <div class="island-sep"></div>
+                    <span class="island-stage">X Stage</span>
+                    <div class="island-sep"></div>
+                    <span class="island-stage">Mcountdown Stage</span>
+                </div>
+                <div class="island-badge">
+                    <div class="island-badge-dot"></div>
+                    <span>Live</span>
+                </div>
             </div>
         </div>
     </div>
