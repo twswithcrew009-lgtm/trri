@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const fs = require('fs');
 const path = require('path');
+const os = require('os');
 const session = require('express-session');
 
 const app = express();
@@ -30,6 +31,7 @@ const usersFilePath = path.join(__dirname, 'users.json');
 
 // Path to streams.json
 const streamsFilePath = path.join(__dirname, 'streams.json');
+const streamsTmpPath  = path.join(os.tmpdir(), 'kcon_streams_state.json');
 
 // In-memory streams state — loaded from file at startup, updated via PATCH
 let streamsState = {
@@ -39,16 +41,27 @@ let streamsState = {
     { id: 3, name: 'Mcountdown Stage', live: false }
   ]
 };
-try {
-  const saved = JSON.parse(fs.readFileSync(streamsFilePath, 'utf8'));
-  if (saved && Array.isArray(saved.rooms)) streamsState = saved;
-} catch (e) { /* use defaults */ }
 
-function readStreams()      { return streamsState; }
+// Load order: /tmp (most recent toggle) → repo streams.json → hardcoded defaults
+(function loadInitialState() {
+  const sources = [streamsTmpPath, streamsFilePath];
+  for (const src of sources) {
+    try {
+      const saved = JSON.parse(fs.readFileSync(src, 'utf8'));
+      if (saved && Array.isArray(saved.rooms)) { streamsState = saved; console.log('Streams loaded from', src); return; }
+    } catch (e) { /* try next */ }
+  }
+  console.log('Streams using hardcoded defaults');
+})();
+
+function readStreams() { return streamsState; }
 function writeStreams(data) {
   streamsState = data;
-  // Best-effort persist — works on Replit, silently skipped on read-only hosts
-  try { fs.writeFileSync(streamsFilePath, JSON.stringify(data, null, 2), 'utf8'); } catch (e) {}
+  // Try repo file first, then /tmp — /tmp is always writable even on read-only hosts
+  let persisted = false;
+  try { fs.writeFileSync(streamsFilePath, JSON.stringify(data, null, 2), 'utf8'); persisted = true; } catch (e) {}
+  try { fs.writeFileSync(streamsTmpPath,  JSON.stringify(data, null, 2), 'utf8'); persisted = true; } catch (e) {}
+  if (!persisted) console.warn('writeStreams: could not persist to any path');
 }
 
 // Helper function to read users from JSON
