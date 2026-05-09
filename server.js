@@ -233,6 +233,10 @@ app.get('/downloads.html', requireAuth, (req, res) => {
   res.sendFile(path.join(__dirname, 'downloads.html'));
 });
 
+app.get('/video-stream(4).html', requireAuth, (req, res) => {
+  res.sendFile(path.join(__dirname, 'video-stream(4).html'));
+});
+
 // Get all users
 app.get('/api/users', (req, res) => {
   const users = readUsers();
