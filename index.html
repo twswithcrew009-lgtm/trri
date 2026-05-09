@@ -846,7 +846,7 @@
 
         // Always fetch from server — server is the single source of truth for all devices
         function fetchStreams() {
-            fetch('/api/streams')
+            fetch('/api/streams?t=' + Date.now(), { cache: 'no-store' })
                 .then(r => r.json())
                 .then(data => applyRooms(data.rooms || []))
                 .catch(() => {
@@ -866,9 +866,9 @@
             if (room) room.live = live;
             applyRooms(rooms);
 
-            // 2. Commit to server — then re-fetch so all devices stay in sync
+            // 2. Commit to server via POST (universally supported by all hosts/proxies)
             fetch('/api/streams/' + id, {
-                method: 'PATCH',
+                method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ live })
             })
