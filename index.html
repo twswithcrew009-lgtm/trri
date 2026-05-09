@@ -61,8 +61,9 @@
         .left-brand p { color: rgba(255,255,255,0.55); font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; font-weight: 600; }
         .left-brand span { color: rgba(255,255,255,0.28); font-size: 11px; display: block; margin-top: 3px; }
 
-        /* Mobile pill — fixed at bottom on mobile, hidden on desktop */
-        .mobile-island { display: none; }
+        /* Pills hidden */
+        .mobile-island { display: none !important; }
+        .dynamic-island { display: none !important; }
 
         /* Dynamic Island */
         .dynamic-island {
@@ -590,7 +591,7 @@
         </p>
 
         <div class="glass-box">
-            <div id="dashPill" style="display:flex;justify-content:center;margin-bottom:14px;"></div>
+            <div id="dashPill" style="display:none;"></div>
             <p class="rooms-label">Select a room to join</p>
 
             <div class="rooms-grid">
