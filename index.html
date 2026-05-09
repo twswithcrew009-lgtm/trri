@@ -844,6 +844,7 @@
             if (dot) dot.classList.toggle('on', live);
             fetch('/api/streams/' + id, {
                 method: 'PATCH',
+                credentials: 'same-origin',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ live })
             })
