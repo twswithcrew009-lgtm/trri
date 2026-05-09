@@ -821,6 +821,12 @@
         }
 
         const STREAMS_LS_KEY = 'kcon_streams';
+        const DEFAULT_ROOMS = [
+            {id:1, name:'Artist Stage',    live:false},
+            {id:2, name:'X Stage',         live:false},
+            {id:3, name:'Mcountdown Stage', live:false}
+        ];
+        let adminToggled = false; // once admin flips a toggle, localStorage is authoritative
 
         function saveLocal(rooms) {
             try { localStorage.setItem(STREAMS_LS_KEY, JSON.stringify(rooms)); } catch(e) {}
@@ -845,46 +851,46 @@
         }
 
         function fetchStreams() {
+            // If admin has manually toggled, don't let the server override local state
+            if (adminToggled) {
+                const saved = loadLocal();
+                if (saved) { buildPill(saved); syncToggles(saved); }
+                return;
+            }
             fetch('/api/streams')
                 .then(r => r.json())
-                .then(data => applyRooms(data.rooms || []))
+                .then(data => {
+                    if (!adminToggled) applyRooms(data.rooms || []);
+                })
                 .catch(() => {
                     const saved = loadLocal();
                     if (saved) { buildPill(saved); syncToggles(saved); }
-                    else { buildPill([]); }
+                    else { buildPill(DEFAULT_ROOMS); syncToggles(DEFAULT_ROOMS); }
                 });
         }
 
         window.setLive = function setLive(id, live) {
-            // 1. Update localStorage immediately so refresh keeps the state
-            const rooms = loadLocal() || [
-                {id:1,name:'Artist Stage',live:false},
-                {id:2,name:'X Stage',live:false},
-                {id:3,name:'Mcountdown Stage',live:false}
-            ];
+            adminToggled = true;
+
+            // Update local state immediately — pill updates right away
+            const rooms = loadLocal() || JSON.parse(JSON.stringify(DEFAULT_ROOMS));
             const room = rooms.find(r => r.id === id);
             if (room) room.live = live;
             applyRooms(rooms);
 
-            // 2. Also tell the server (best-effort)
+            // Best-effort: also tell the server
             fetch('/api/streams/' + id, {
                 method: 'PATCH',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ live })
-            })
-            .then(r => r.json())
-            .then(data => {
-                if (data.room) {
-                    const r2 = rooms.find(r => r.id === id);
-                    if (r2) r2.live = data.room.live;
-                    applyRooms(rooms);
-                }
-            })
-            .catch(() => {}); // localStorage already saved — pill stays correct
+            }).catch(() => {});
         }
 
+        // Show localStorage state immediately, then confirm with server
+        const initLocal = loadLocal();
+        if (initLocal) { buildPill(initLocal); syncToggles(initLocal); }
         fetchStreams();
-        setInterval(fetchStreams, 30000); // refresh every 30s
+        setInterval(fetchStreams, 30000);
 
         // Force-play background video
         const vid = document.getElementById('bgVideo');
