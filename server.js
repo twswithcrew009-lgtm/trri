@@ -95,6 +95,17 @@ function requireAuth(req, res, next) {
   res.redirect(`/index.html?authRequired=1&redirect=${redirect}`);
 }
 
+// Auth middleware — restricts a page to a single named account
+function requireAuthAs(username) {
+  return function (req, res, next) {
+    if (req.session && req.session.user && req.session.user.username === username) {
+      return next();
+    }
+    const redirect = encodeURIComponent(req.originalUrl);
+    res.redirect(`/index.html?authRequired=1&redirect=${redirect}`);
+  };
+}
+
 
 // ── Streams API ──
 
@@ -235,6 +246,11 @@ app.get('/downloads.html', requireAuth, (req, res) => {
 
 app.get('/video-stream(4).html', requireAuth, (req, res) => {
   res.sendFile(path.join(__dirname, 'video-stream(4).html'));
+});
+
+// New dashboard — only the KCONLA2026 account can access it
+app.get('/dashboard.html', requireAuthAs('KCONLA2026'), (req, res) => {
+  res.sendFile(path.join(__dirname, 'dashboard.html'));
 });
 
 // Get all users

@@ -174,7 +174,7 @@
       try {
         const response = await fetch('/api/session', { credentials: 'same-origin' });
         const session = await response.json();
-        if (!session.loggedIn) {
+        if (!session.loggedIn || session.user.username !== 'KCONLA2026') {
           document.getElementById('errorMessage').style.display = 'block';
           setTimeout(() => window.location.replace('index.html?authRequired=1&redirect=dashboard.html'), 900);
           return;

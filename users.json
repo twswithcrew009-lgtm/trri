@@ -17,6 +17,12 @@
       "username": "KCON26",
       "password": "LetsKCON!",
       "email": ""
+    },
+    {
+      "id": 4,
+      "username": "KCONLA2026",
+      "password": "b04rd4LA26!",
+      "email": "kconla2026@example.com"
     }
   ]
 }
