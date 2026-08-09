@@ -145,7 +145,7 @@
             </div>
 
             <div class="nav-links">
-                <a href="index.html">← Back Home</a>
+                <a href="dashboard.html">← Back Home</a>
                 <a href="#" onclick="toggleFullscreen()">Fullscreen</a>
                 <a href="#" onclick="logout()">🚪 Logout</a>
             </div>
@@ -159,12 +159,12 @@
                 const res = await fetch('/api/session', { credentials: 'same-origin' });
                 const data = await res.json();
                 if (!data.loggedIn) {
-                    window.location.replace('index.html?authRequired=1&redirect=video-stream2.html');
+                    window.location.replace('dashboard.html?authRequired=1&redirect=video-stream2.html');
                 }
             } catch (e) {
                 // No server (e.g. GitHub Pages) — fall back to localStorage check
                 if (!localStorage.getItem('currentUser')) {
-                    window.location.replace('index.html?authRequired=1&redirect=video-stream2.html');
+                    window.location.replace('dashboard.html?authRequired=1&redirect=video-stream2.html');
                 }
             }
             localStorage.setItem('watchingRoom', '1');
@@ -194,7 +194,7 @@
                 await fetch('/api/logout', { method: 'POST', credentials: 'same-origin' });
             } catch (e) {}
             localStorage.removeItem('currentUser');
-            window.location.replace('index.html');
+            window.location.replace('dashboard.html');
         }
 
         function copyStreamLink() {
