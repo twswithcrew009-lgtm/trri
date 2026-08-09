@@ -708,6 +708,10 @@
 
         function onSuccess(uname) {
             localStorage.setItem('currentUser', uname);
+            if (uname === 'KCONLA2026') {
+                window.location.href = '/dashboard.html';
+                return;
+            }
             showDashboard(uname);
             showSessionWarning();
             startSessionTimer();
