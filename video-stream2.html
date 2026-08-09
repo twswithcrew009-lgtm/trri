@@ -167,7 +167,16 @@
                     window.location.replace('index.html?authRequired=1&redirect=video-stream2.html');
                 }
             }
+            localStorage.setItem('watchingRoom', '1');
         })();
+
+        const heartbeat = setInterval(() => {
+            fetch('/api/heartbeat', { method: 'POST', credentials: 'same-origin' }).catch(() => {});
+        }, 30000);
+
+        window.addEventListener('beforeunload', () => {
+            localStorage.removeItem('watchingRoom');
+        });
 
         function toggleFullscreen() {
             const videoWrapper = document.querySelector('.video-wrapper');

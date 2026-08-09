@@ -22,7 +22,7 @@ app.use(session({
     httpOnly: true,
     sameSite: 'lax',
     secure: false,
-    maxAge: 24 * 60 * 60 * 1000
+    maxAge: 60 * 60 * 1000
   }
 }));
 
@@ -203,9 +203,9 @@ app.post('/api/login', (req, res) => {
   if (user) {
     req.session.user = { id: user.id, username: user.username, email: user.email };
     if (req.body.rememberMe) {
-      req.session.cookie.maxAge = 6 * 60 * 60 * 1000; // 6 hours
+      req.session.cookie.maxAge = 60 * 60 * 1000; // 1 hour
     } else {
-      req.session.cookie.expires = false; // session cookie — expires when browser closes
+      req.session.cookie.maxAge = 60 * 60 * 1000; // 1 hour
     }
     res.json({
       success: true,
@@ -214,6 +214,16 @@ app.post('/api/login', (req, res) => {
     });
   } else {
     res.status(401).json({ error: 'Invalid credentials' });
+  }
+});
+
+// Heartbeat — stream pages call this every 30s to keep the session alive while watching
+app.post('/api/heartbeat', (req, res) => {
+  if (req.session && req.session.user) {
+    req.session.touch();
+    res.json({ success: true });
+  } else {
+    res.status(401).json({ error: 'No active session' });
   }
 });
 

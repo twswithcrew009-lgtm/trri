@@ -167,7 +167,18 @@
                     window.location.replace('index.html?authRequired=1&redirect=video-stream.html');
                 }
             }
+            localStorage.setItem('watchingRoom', '1');
         })();
+
+        // Heartbeat keeps the server session alive while this room is open
+        const heartbeat = setInterval(() => {
+            fetch('/api/heartbeat', { method: 'POST', credentials: 'same-origin' }).catch(() => {});
+        }, 30000);
+
+        // If the user closes the tab or navigates away, clear the watching flag
+        window.addEventListener('beforeunload', () => {
+            localStorage.removeItem('watchingRoom');
+        });
 
         function toggleFullscreen() {
             const videoWrapper = document.querySelector('.video-wrapper');

@@ -162,6 +162,7 @@
     async function logout() {
       try { await fetch('/api/logout', { method: 'POST', credentials: 'same-origin' }); } catch {}
       localStorage.removeItem('currentUser');
+      localStorage.removeItem('watchingRoom');
       window.location.replace('index.html');
     }
 
@@ -183,6 +184,11 @@
       showUser(username);
       loadRooms();
     }
+
+    // Heartbeat keeps the server session alive while the dashboard is open
+    setInterval(() => {
+      fetch('/api/heartbeat', { method: 'POST', credentials: 'same-origin' }).catch(() => {});
+    }, 30000);
 
     init();
   </script>

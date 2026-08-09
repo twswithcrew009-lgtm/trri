@@ -652,9 +652,10 @@
 </div>
 
 <script>
-    const SESSION_TIMEOUT = 30 * 60 * 1000;
+    const SESSION_TIMEOUT = 60 * 60 * 1000;
     let sessionTimer = null;
     let lastActivityTime = Date.now();
+    let lastHeartbeatTime = Date.now();
 
     const validUsers = [
         { id:1, username:"admin",  password:"admin123",     email:"admin@example.com" },
@@ -743,9 +744,15 @@
     function startSessionTimer() {
         if (sessionTimer) { clearInterval(sessionTimer); }
         lastActivityTime = Date.now();
+        lastHeartbeatTime = Date.now();
         sessionTimer = setInterval(() => {
+            const watchingRoom = localStorage.getItem('watchingRoom') === '1';
+            if (watchingRoom) {
+                lastActivityTime = Date.now();
+                return;
+            }
             if (Date.now() - lastActivityTime > SESSION_TIMEOUT) {
-                clearSession('Inactivity');
+                clearSession('Session expired — 1 hour with no active watching room');
                 showWelcome();
                 alert('⏱️ Session expired due to inactivity. Please login again.');
             }
