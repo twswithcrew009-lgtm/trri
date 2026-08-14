@@ -300,39 +300,6 @@
                 </div>
             </div>
 
-            <!-- X Stage -->
-            <div class="dropdown-wrapper">
-                <button class="download-btn btn-x" onclick="toggleDropdown('xstage')">
-                    <div class="btn-label">
-                        <div class="btn-icon-wrap">⭐</div>
-                        <span class="btn-name">X Stage</span>
-                    </div>
-                    <div class="btn-arrow">
-                        <svg viewBox="0 0 12 12" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M2 4l4 4 4-4"/>
-                        </svg>
-                    </div>
-                </button>
-                <div class="dropdown-menu" id="dropdown-xstage">
-                    <a href="https://drive.google.com/drive/folders/1kNzu-E6DSKcgk91b3HAUz9XJFXXHUrNE?usp=drive_link" target="_blank" rel="noopener noreferrer" class="dropdown-item">
-                        <span class="day-label"><span class="day-icon">☁️</span> Download All (Google Drive)</span>
-                        <div class="dl-arrow-sm"><svg viewBox="0 0 16 16" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3v7M5 7l3 3 3-3M3 13h10"/></svg></div>
-                    </a>
-                    <a href="https://www.mediafire.com/folder/j47uluqxeftiz/X_Stage" target="_blank" class="dropdown-item">
-                        <span class="day-label"><span class="day-icon">📅</span> Day 1</span>
-                        <div class="dl-arrow-sm"><svg viewBox="0 0 16 16" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3v7M5 7l3 3 3-3M3 13h10"/></svg></div>
-                    </a>
-                    <a href="https://www.mediafire.com/folder/460yhu1rbs407/DAY+2" target="_blank" class="dropdown-item">
-                        <span class="day-label"><span class="day-icon">📅</span> Day 2</span>
-                        <div class="dl-arrow-sm"><svg viewBox="0 0 16 16" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3v7M5 7l3 3 3-3M3 13h10"/></svg></div>
-                    </a>
-                    <a href="https://www.mediafire.com/folder/riy0h6z7t5knx/DAY+3" target="_blank" class="dropdown-item">
-                        <span class="day-label"><span class="day-icon">📅</span> Day 3</span>
-                        <div class="dl-arrow-sm"><svg viewBox="0 0 16 16" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3v7M5 7l3 3 3-3M3 13h10"/></svg></div>
-                    </a>
-                </div>
-            </div>
-
             <!-- Mcountdown Stage -->
             <div class="dropdown-wrapper">
                 <button class="download-btn btn-mcountdown" onclick="toggleDropdown('mcountdown')">
@@ -365,7 +332,7 @@
         </div>
 
         <div class="footer-actions">
-            <a href="index.html" class="nav-back">
+            <a href="dashboard.html" class="nav-back">
                 <svg viewBox="0 0 16 16" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M10 3L5 8l5 5"/>
                 </svg>
@@ -402,11 +369,11 @@
                 const res = await fetch('/api/session', { credentials: 'same-origin' });
                 const data = await res.json();
                 if (!data.loggedIn) {
-                    window.location.replace('index.html?authRequired=1&redirect=downloads.html');
+                    window.location.replace('index.html?authRequired=1&redirect=downloadsla.html');
                 }
             } catch (e) {
                 if (!localStorage.getItem('currentUser')) {
-                    window.location.replace('index.html?authRequired=1&redirect=downloads.html');
+                    window.location.replace('index.html?authRequired=1&redirect=downloadsla.html');
                 }
             }
         })();
