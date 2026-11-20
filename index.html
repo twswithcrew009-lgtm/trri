@@ -872,9 +872,9 @@
         }
 
         const DEFAULT_ROOMS = [
-            {id:1, name:'Artist Stage',     live:false},
-            {id:2, name:'X Stage',          live:false},
-            {id:3, name:'Mcountdown Stage', live:false}
+            {id:1, name:'Stream Room 1',     live:false},
+            {id:2, name:'Stream Room 2',          live:false},
+            {id:3, name:'Stream Room 3', live:false}
         ];
 
         // Fetch current state once from REST endpoint (used on load + SSE fallback)
@@ -918,9 +918,9 @@
         window.setLive = function setLive(id, live) {
             // 1. Optimistic UI update immediately
             const rooms = loadLocal() || [
-                {id:1,name:'Artist Stage',live:false},
-                {id:2,name:'X Stage',live:false},
-                {id:3,name:'Mcountdown Stage',live:false}
+                {id:1,name:'Stream Room 1',live:false},
+                {id:2,name:'Stream Room 2',live:false},
+                {id:3,name:'Stream Room 3',live:false}
             ];
             const room = rooms.find(r => r.id === id);
             if (room) room.live = live;
