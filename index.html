@@ -658,7 +658,6 @@
     let lastHeartbeatTime = Date.now();
 
     const validUsers = [
-        { id:1, username:"admin",  password:"admin123",     email:"admin@example.com" },
         { id:2, username:"KcoN26", password:"LEtSKc0N!",    email:"default@gmail.com" },
         { id:3, username:"user2",  password:"pass456",      email:"user2@example.com" },
         { id:4, username:"test",   password:"test123",      email:"test@example.com"  },
@@ -776,7 +775,7 @@
         document.getElementById('dashboardPage').style.display = 'block';
         document.body.style.overflow = 'auto';
         document.getElementById('displayUsername').textContent = uname;
-        document.getElementById('adminPanel').style.display = uname === 'admin' ? 'block' : 'none';
+        document.getElementById('adminPanel').style.display = uname === 'MAMA26' ? 'block' : 'none';
         window.scrollTo(0, 0);
         console.log('✅ Main content displayed for user:', uname);
     }
