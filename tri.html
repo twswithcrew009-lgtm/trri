@@ -431,12 +431,6 @@
         // HARDCODED USERS DATABASE (Embedded in HTML)
         const validUsers = [
             {
-                "id": 1,
-                "username": "admin",
-                "password": "admin123",
-                "email": "admin@example.com"
-            },
-            {
                 "id": 2,
                 "username": "KcoN26",
                 "password": "LEtSKc0N!",
@@ -556,7 +550,7 @@
         });
 
         // Handle login form submission
-        document.getElementById('loginForm').addEventListener('submit', function(e) {
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             
             const username = document.getElementById('username').value.trim();
@@ -575,8 +569,19 @@
                 return;
             }
 
-            // STRICT validation against embedded database
-            const user = validUsers.find(u => u.username === username && u.password === password);
+            let user;
+            try {
+                const res = await fetch('/api/login', {
+                    method: 'POST',
+                    credentials: 'same-origin',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+                const data = await res.json();
+                if (res.ok && data.success) user = data.user;
+            } catch {
+                user = validUsers.find(u => u.username === username && u.password === password);
+            }
 
             if (user) {
                 // Valid credentials
